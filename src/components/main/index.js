@@ -1,54 +1,33 @@
-import Container from '../containers/Container'
+import Container from '../containers/Container' 
 import PageHeading from '../PageHeading'    
-import LastAdded from '../sections/LastAdded'
-import Label from '../sections/Label'
-import { useState, useEffect } from 'react'
-// import img_product from '../../../public/img/product_dummy.svg'
+import LastAdded from './sections/LastAdded'
+import Label from './sections/Label'
+import { useState } from 'react'
+import Table from './sections/Table'
+import getData from '../services/getData'
 
 export default function Main(){
-
-    const [ qty, setQty] = useState('0')
-    const [ totalPrice, setTotalPrice] = useState('0.00')
+   
     const [ totalUsers, setTotalUsers] = useState('0')
-    const [ totalCategories, setTotalCategories] = useState('0')
-    const [ name, setName] = useState('Title')
-    const [ description, setDescription] = useState('Description')
-    const [ images, setImages] = useState('Image')
-
-      useEffect(()=>{
-          fetch('http://localhost:3300/api/products')
-              .then( res => res.json())
-                  .then( data => {
-                    console.log(data);
-                    setQty(data.allProducts.count)
-                    setTotalPrice(data.meta.totalAmount)
-                    setTotalCategories(data.meta.totalCategories)
-                    const { name, description, images_url } = data.meta.lastProduct
-                    setName(name)
-                    setDescription(description)
-                    setImages(images_url[0])
-                    
-                  })
-          fetch('http://localhost:3300/api/users')
-              .then(res => res.json())
-                  .then(data =>{
-                    setTotalUsers(data.meta.count)
-                  })
-      },[])
+    const [ meta, setMeta] = useState([])
+    const [ lastProduct, setLastProduct] = useState({})
+    
+    getData(setTotalUsers,setMeta,setLastProduct) 
 
     return (
             <Container classes="container-fluid">
             	<PageHeading />
                 <Container classes="row">  
                     <Label color="danger" title="total users" content={totalUsers} item="fas fa-user-check fa-2x text-gray-500"/>
-                    <Label color="success" title="total amount" content={`$${totalPrice}`} item="fas fa-dollar-sign fa-2x text-gray-500"/>
-                    <Label color="primary" title="products in data base" content={qty} item="fas fa-clipboard-list fa-2x text-gray-500"/>
-                    <Label color="warning" title="total categories" content={totalCategories} item="fas fa-tshirt fa-2x text-gray-500"/>
-                  <Container classes="row">
-                    <LastAdded element="product" color="primary" imgURL={images} name={name} description={description}/>
-                    <Table element="product" color="primary" imgURL={images} name={name} description={description}/>
-                  </Container>
+                    <Label color="success" title="total amount" content={`$${meta.totalAmount}`} item="fas fa-dollar-sign fa-2x text-gray-500"/>
+                    <Label color="primary" title="products in data base" content={meta.count} item="fas fa-clipboard-list fa-2x text-gray-500"/>
+                    <Label color="warning" title="total categories" content={meta.totalCategories} item="fas fa-tshirt fa-2x text-gray-500"/>
                 </Container>
+                <Container classes="row">               
+                  <LastAdded color="primary" imgURL={ lastProduct.images_url} name={lastProduct.title} description={lastProduct.description} detail={lastProduct.detail}/>
+                  <Table />
+                </Container>
+
           	</Container>
         )
 }
