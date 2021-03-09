@@ -5,14 +5,18 @@ import Label from './sections/Label'
 import { useState } from 'react'
 import Table from './sections/Table'
 import getData from '../services/getData'
+import Product from './sections/Product'
 
 export default function Main(){
    
     const [ totalUsers, setTotalUsers] = useState('0')
     const [ meta, setMeta] = useState([])
     const [ lastProduct, setLastProduct] = useState({})
+    const [ paginatedProducts, setPaginatedProducts] = useState([])
+    const [categories, setCategories] = useState({})
+    const eachCategory = Object.entries(categories);
     
-    getData(setTotalUsers,setMeta,setLastProduct) 
+    getData(setTotalUsers,setMeta,setLastProduct, setCategories, setPaginatedProducts)
 
     return (
             <Container classes="container-fluid">
@@ -25,7 +29,10 @@ export default function Main(){
                 </Container>
                 <Container classes="row">               
                   <LastAdded color="primary" imgURL={ lastProduct.images_url} name={lastProduct.title} description={lastProduct.description} detail={lastProduct.detail}/>
-                  <Table />
+                  <Table category={eachCategory}/>
+                </Container>
+                <Container classes="row">
+                  <Product pages={paginatedProducts}/>
                 </Container>
 
           	</Container>
