@@ -7,6 +7,7 @@ export default function GetData(setTotalUsers, setMeta, setLastProduct, setCateg
                 .then( data => {
                   setMeta(data.meta)
                   setLastProduct(data.meta.lastProduct)
+                  setCategories(data.meta.countByCategory)
                 })
         fetch('http://localhost:3300/api/users')
             .then(res => res.json())
